@@ -28,7 +28,14 @@ proxy_set_header X-Forwarded-Proto $proxy_x_forwarded_proto;
 proxy_set_header Proxy "";
 server {
         server_name _; # This is just an invalid value which will never trigger on a real hostname.
-        listen 80;
+        listen 80 ssl;
+
+        ssl_certificate      /root/etc/nginx/certs/server.crt;
+        ssl_certificate_key  /root/etc/nginx/certs/server.key;
+        ssl_client_certificate /root/etc/nginx/certs/ca.crt;
+        ssl_verify_client optional;
+
+
         access_log /var/log/nginx/access.log vhost;
         location = / {
                 return 200 'nginx is alive';
@@ -48,7 +55,14 @@ upstream {{ $domain }} {
 }
 server {
         server_name {{ $domain }};
-        listen 80;
+        listen 80 ssl;
+
+        ssl_certificate      /root/etc/nginx/certs/server.crt;
+        ssl_certificate_key  /root/etc/nginx/certs/server.key;
+        ssl_client_certificate /root/etc/nginx/certs/ca.crt;
+        ssl_verify_client optional;
+
+
         access_log /var/log/nginx/access.log vhost;
         location / {
                 proxy_pass http://{{ $domain }};
